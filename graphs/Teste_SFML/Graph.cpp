@@ -41,10 +41,11 @@ void Graph::BSF(int s, bool visited[]) {
 
 	while (!q.empty()) {
 
+		int aux = s;
 		s = q.front(); //take the first in list
 		q.pop_front();
 
-		cout << s << "\n";
+		cout << s << " neighbor of " << aux << "\n";
 
 		for (i = adj[s].begin(); i != adj[s].end(); i++) {
 
@@ -59,16 +60,16 @@ void Graph::BSF(int s, bool visited[]) {
 }
 
 
-int main() {
+/*int main() {
 
 	bool visited[4];
 	Graph g(4);
 	g.addEdge(0, 1);
-	g.addEdge(0, 2);
-	g.addEdge(1, 2);
-	g.addEdge(2, 3);
-	g.addEdge(3, 3);
+  g.addEdge(0, 2);
+  g.addEdge(1, 2);
+  g.addEdge(2, 3);
+  g.addEdge(3, 3);
 	g.BSF(0, visited);
 
 	return 0;
-}
+}*/
