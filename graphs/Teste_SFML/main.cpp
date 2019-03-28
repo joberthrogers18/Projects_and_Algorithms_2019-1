@@ -9,8 +9,24 @@ int main() {
 	// create the window
 	sf::RenderWindow window(sf::VideoMode(1000, 1000), "My window");
 	
-	std::vector <sf::RectangleShape> vectorRect(1600);
+	std::vector <sf::RectangleShape> vectorRect(2);
 
+	// define a 120x50 rectangle
+	sf::RectangleShape rectangle1(sf::Vector2f(50.f, 50.f));
+
+	rectangle1.setPosition(0.0f, 0.0f);
+
+	// define a 120x50 rectangle
+	sf::RectangleShape rectangle2(sf::Vector2f(50.f, 50.f));
+
+	rectangle2.setPosition(50.0f, 0.0f);
+
+	rectangle2.setOutlineThickness(1.f);
+	rectangle2.setOutlineColor(sf::Color(0, 0, 0));
+
+	vectorRect[0] = rectangle1;
+
+	vectorRect[0].setFillColor(sf::Color(255,0,0));
 
 	// run the program as long as the window is open
 	while (window.isOpen())
@@ -19,59 +35,22 @@ int main() {
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
-			// "close requested" event: we close the window
-			if (event.type == sf::Event::Closed)
-				window.close();
+				switch (event.type) {
+					case(sf::Event::Closed):
+						window.close();
+						break;
+					case sf::Event::KeyPressed:
+						vectorRect[0].setFillColor(sf::Color(255,255,255));
+						break;
+					default:
+						break;
+				}
 		}
 
 		// clear the window with black color
 		window.clear(sf::Color::Black);
-
-		sf::RectangleShape rect1(sf::Vector2f(30.f, 30.f));
-
-		int auxX = 1;
-
-		for (int i = 0; i < 40; i++) {
-			for (int j = 0; j < 40; j++) {
-				rect1.setPosition(30 * i, 30 * j);
-				rect1.setFillColor(sf::Color(255, 0, 0));
-				
-				if (i != 0) {
-					vectorRect[i*j] = rect1;
-					window.draw(vectorRect[i*j]);
-				}
-				else if(j == 0) {
-					vectorRect[i*40+1] = rect1;
-					window.draw(vectorRect[i*40+1]);
-				}
-				else {
-					vectorRect[j] = rect1;
-					window.draw(vectorRect[j]);
-				}
-			}
-
-		}
-
-		vectorRect[50].setPosition(0,0);
-
 		
-		/*// define a 120x50 rectangle
-		sf::RectangleShape rectangle1(sf::Vector2f(50.f, 50.f));
-
-		rectangle1.setPosition(0.0f, 0.0f);
-
-		window.draw(rectangle1);
-
-		// define a 120x50 rectangle
-		sf::RectangleShape rectangle2(sf::Vector2f(50.f, 50.f));
-
-		rectangle2.setPosition(50.0f, 0.0f);
-
-		rectangle2.setOutlineThickness(1.f);
-		rectangle2.setOutlineColor(sf::Color(0,0,0));
-
-
-		window.draw(rectangle2);*/
+		window.draw(vectorRect[0]);
 
 		// end the current frame
 		window.display();
