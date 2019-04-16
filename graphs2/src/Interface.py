@@ -3,6 +3,7 @@ import pydotplus as ptp
 from IPython.display import SVG, display
 from PIL import ImageTk, Image
 from connectionDatabse import Connection
+import random
 
 
 class Application:
@@ -56,31 +57,50 @@ class Application:
             widget.destroy()
 
         database = Connection.connectionDatabase()
-        collectionCourse = database['habilitations']
+        collectionDiscipline = database.disciplines
+        collectionHabilitation = database['habilitations']
 
-        feedbackCount = collectionCourse.find(
+        feedbackCount = collectionHabilitation.find(
             {'code': int(habilitationCode)}).count()
         
-        print(feedbackCount)
 
         if feedbackCount == 0:
             self.Warning = tk.Label(self.containerGraph,
                                     text="Nao existe esse codigo para essa habilitacao")
             self.Warning.pack()
         else:
+
+            edges = []
+            nodes = []
+
+            disciplines = collectionHabilitation.find_one({'code': int(habilitationCode)})
+
+            list_discipline = []
+
+            for discipline in disciplines['disciplines']:
+                list_discipline += discipline.values()[0]
+
+            for discipline in list_discipline:
+                current_dis = collectionDiscipline.find_one({'code': str(discipline)})
+                for requirement in current_dis['requirements']:
+
+                    nodes.append((int(discipline), current_dis['name']))
+                    edges.append((int(requirement), int(discipline) ))
+                    
+                
+            graph = ptp.Dot(graph_type='digraph', rankdir='LR')
+
+            for e in edges:
+                graph.add_edge(ptp.Edge(e[0], e[1]))
+            for n in nodes:
+                node = ptp.Node(name=n[0], label= n[1], fillcolor=n[2], style="filled" )
+                graph.add_node(node)
+            graph.write_png('file.png')
+            
+
             self.showGraph()
 
-        '''
-        graph = ptp.Dot(graph_type='graph', rankdir='LR')
-        edges = [(1,2), (1,3), (2,4), (2,5), (3,5)]
-        nodes = [(1, "A", ""), (2, "B", ""), (3, "C", ""), (4, "D", ""), (5, "E", "")]
-        for e in edges:
-            graph.add_edge(ptp.Edge(e[0], e[1]))
-        for n in nodes:
-            node = ptp.Node(name=n[0], label= n[1], fillcolor=n[2], style="filled" )
-            graph.add_node(node)
-        graph.write_png('file.png')
-        '''
+        
 
 
 if __name__ == "__main__":

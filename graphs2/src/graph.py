@@ -1,4 +1,23 @@
 import pydotplus
+from connectionDatabse import Connection
+
+class Discipline:
+    def __init__(self, disciplines, code):
+        self.disciplines = disciplines
+    
+    def load_diciplines(self):
+        database = Connection.connectionDatabase()
+        collectionDisciplines = database['disciplines']
+        
+        requirements_list = []
+
+        for discipline in self.disciplines:
+            for requirement in discipline.requirements:
+                result = collectionDisciplines.find_one({'code': requirement.code})
+                print(result)
+                
+        
+
 
 ''''
 def generate_graph():
@@ -12,3 +31,5 @@ def generate_graph():
         node = ptp.Node(name=n[0], label= n[1], fillcolor=n[2], style="filled" )
         graph.add_node(node)
     graph.write_png("file.png")'''
+
+    { "name" : "GESTÃO E INOVAÇÃO DE PROCESSOS CRÍTICOS EM ORGANIZAÇÃO DE SERVIÇO", "code" : "1111", "departament" : "025", "classes" : [ "A" ], "requirements" : ["120618", "129666", "103594"] }
