@@ -82,20 +82,24 @@ class Application:
 
             for discipline in list_discipline:
                 current_dis = collectionDiscipline.find_one({'code': str(discipline)})
+                nodes.append((int(discipline), current_dis['name']))
                 for requirement in current_dis['requirements']:
 
-                    nodes.append((int(discipline), current_dis['name']))
                     edges.append((int(requirement), int(discipline) ))
+
+            print(nodes)
+            print(edges)
                     
                 
             graph = ptp.Dot(graph_type='digraph', rankdir='LR')
-
+               
             for e in edges:
                 graph.add_edge(ptp.Edge(e[0], e[1]))
             for n in nodes:
-                node = ptp.Node(name=n[0], label= n[1], fillcolor=n[2], style="filled" )
+                node = ptp.Node(name=n[0], label= n[1], style="filled" )
                 graph.add_node(node)
             graph.write_png('file.png')
+            
             
 
             self.showGraph()
