@@ -7,34 +7,41 @@ class Application:
 
     def __init__(self, master=None):
 
-        self.container2 = tk.Frame(master)
-        self.container2.pack()
-        
-        self.labelCodeCourse = tk.Label(self.container2, text = "Codigo materia: ")
-        self.labelCodeCourse.pack(side=tk.LEFT)
-        self.codeCourse = tk.Entry(self.container2)
-        self.codeCourse["width"] = 30
-        self.codeCourse.pack(side=tk.LEFT, padx=10)
+        self.containerEntry = tk.Frame(master)
+        self.containerEntry.pack()
+        generateInterfaceEntry(self.containerEntry)
+        generateGraph()
 
-        self.buttonCodeCourse = tk.Button(self.container2)
-        self.buttonCodeCourse["text"] = "Procurar"
-        self.buttonCodeCourse.pack(side=tk.LEFT)
+        self.containerGraph = tk.Frame(master,bg = "white")
+        self.containerGraph.pack(pady=20)
+        showGraph(self.containerGraph, master)
 
-        generate_graph()
+def generateInterfaceEntry(container):
 
-        self.container3 = tk.Frame(master,bg = "white")
-        self.container3.pack(pady=20)
+    labelCodeCourse = tk.Label(container, text = "Codigo materia: ")
+    labelCodeCourse.pack(side=tk.LEFT)
+    codeCourse = tk.Entry(container)
+    codeCourse["width"] = 30
+    codeCourse.pack(side=tk.LEFT, padx=10)
 
-        self.canvas = tk.Canvas(self.container3, width= master.winfo_screenwidth(), height= master.winfo_screenheight() - 200, bg = "white")
-        self.img = tk.PhotoImage(file="file.png")
-        self.canvas.create_image(20, (master.winfo_screenheight() - 200) // 8, anchor=tk.NW, image=self.img)
-        self.canvas.image = self.img    
-        self.canvas.pack()
+    buttonCodeCourse = tk.Button(container)
+    buttonCodeCourse["text"] = "Procurar"
+    buttonCodeCourse.pack(side=tk.LEFT)
 
-        print(master.winfo_screenwidth())
-        print(master.winfo_screenheight())
+def showGraph(container, master):
+    canvas = tk.Canvas(container,
+                            width= master.winfo_screenwidth(),
+                            height= master.winfo_screenheight() - 200,
+                            bg = "white")
+    img = tk.PhotoImage(file="file.png")
+    canvas.create_image(20, 
+                        (master.winfo_screenheight() - 200) // 8,
+                        anchor=tk.NW, 
+                        image=img)
+    canvas.image = img    
+    canvas.pack()
 
-def generate_graph():
+def generateGraph():
 
     graph = ptp.Dot(graph_type='graph', rankdir='LR')
     edges = [(1,2), (1,3), (2,4), (2,5), (3,5)]
