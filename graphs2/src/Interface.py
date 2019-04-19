@@ -40,22 +40,38 @@ class Application:
         self.containerGraph.pack(pady=20, expand=tk.YES, fill=tk.NONE)
 
     def showGraph(self):
+        # Load the image width and height
+        imageLoad = Image.open("graph.png")
+        widthImg, heightImg = imageLoad.size
+
         # Another container but is special for images
         canvas = tk.Canvas(self.containerGraph,
                            width=self.widthScreen,
                            height=self.heightScreen[0] - 200,
-                           bg="white")
-        # Load the photo in variable
+                           bg="white",
+                           scrollregion=(0,0,widthImg, heightImg))
+        
+        # Setting configurations of scroll
+
+        hbar=tk.Scrollbar(self.containerGraph,orient=tk.HORIZONTAL)
+        hbar.pack(side=tk.BOTTOM,fill=tk.X)
+        hbar.config(command=canvas.xview)
+        vbar=tk.Scrollbar(self.containerGraph,orient=tk.VERTICAL)
+        vbar.pack(side=tk.RIGHT,fill=tk.Y)
+        vbar.config(command=canvas.yview)
+        canvas.config(width=2000,height=2000)
+        canvas.config(xscrollcommand=hbar.set, yscrollcommand=vbar.set)
+        canvas.pack(side=tk.LEFT,expand=True,fill=tk.BOTH)
 
         # resize the graph image
-        imageLoad = Image.open("graph.png")
+        '''    
         imageResized = imageLoad.resize((self.containerGraph.winfo_screenwidth() - 100,
                                         self.containerGraph.winfo_screenheight() - 200),
                                         Image.ANTIALIAS)
 
         imageResized.save('imageResized.png')
-
-        img = tk.PhotoImage(file="imageResized.png")
+        '''
+        img = tk.PhotoImage(file="graph.png")
         
     
         # Determine the pre set configurations for image
