@@ -27,7 +27,7 @@ class Application:
         self.labelCodeCourse.pack(side=tk.LEFT)
         self.codeCourse = tk.Entry(self.containerEntry)
         self.codeCourse["width"] = 30
-        self.codeCourse.pack(side=tk.LEFT, padx=10)
+        self.codeCourse.pack(side=tk.LEFT, padx=10, pady=10)
 
         # button for bind the search
         self.buttonCodeCourse = tk.Button(self.containerEntry)
@@ -35,13 +35,48 @@ class Application:
         self.buttonCodeCourse["command"] = self.generateGraph
         self.buttonCodeCourse.pack(side=tk.LEFT)
 
+        self.topologicalButton = tk.Button(self.containerEntry)
+        self.topologicalButton["text"] = "Ordem Topologica"
+        self.topologicalButton["command"] = self.changeLabelTopologicalTrue
+        self.topologicalButton.pack(side=tk.RIGHT, padx=500)
+
         # Container where the graph is
         self.containerGraph = tk.Frame(master, bg="white")
         self.containerGraph.pack(pady=20, expand=tk.YES, fill=tk.NONE)
 
+        self.topological = False
+
+    def changeLabelTopologicalTrue(self):
+        self.topological = True
+        self.topologicalButton["text"] = "Ver grafo"
+        self.topologicalButton["command"] = self.changeLabelTopologicalFalse
+
+        for widget in self.containerGraph.winfo_children():
+            widget.destroy()
+
+        self.showGraph()
+    
+    def changeLabelTopologicalFalse(self):
+        self.topological = False
+        self.topologicalButton["text"] = "Ordem Topologica"
+        self.topologicalButton["command"] = self.changeLabelTopologicalTrue
+
+        for widget in self.containerGraph.winfo_children():
+            widget.destroy()
+
+        self.showGraph()
+
     def showGraph(self):
+        
+        # set button topological visible
+        
+
         # Load the image width and height
-        imageLoad = Image.open("graph.png")
+        if self.topological == True:
+            imageLoad = Image.open("topological.png")
+        else:
+            imageLoad = Image.open("graph.png")
+
         widthImg, heightImg = imageLoad.size
 
         # Another container but is special for images
@@ -71,7 +106,10 @@ class Application:
 
         imageResized.save('imageResized.png')
         '''
-        img = tk.PhotoImage(file="graph.png")
+        if self.topological == True:
+            img = tk.PhotoImage(file="topological.png")
+        else:
+            img = tk.PhotoImage(file="graph.png")
         
     
         # Determine the pre set configurations for image
