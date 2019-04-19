@@ -38,8 +38,6 @@ class Habilitation:
 
                 type_str =False
 
-                discipline_relation[current_dis['code']] = current_dis['requirements']
-
                 if len(current_dis['requirements']) > 1:
                     type_str = True
                 else:
@@ -47,27 +45,35 @@ class Habilitation:
 
                 cont = 1
                 for requirement in current_dis['requirements']:
-                    print(requirement)
+                    # print(requirement)
 
                     if type_str:
                         nodes.append((str(discipline) + str(cont), 'E'))
                         edges.append((str(discipline) + str(cont), int(discipline)))
                     
                     if isinstance(requirement, list):
+                        if cont == 1:
+                            discipline_relation[current_dis['code']] = requirement
+
                         for single_requirement in requirement:
                             if type_str:
                                 edges.append((int(single_requirement), str(discipline) + str(cont) ))
                             else:
                                 edges.append((int(single_requirement), int(discipline) ))
                     else:
+                        if cont == 1:
+                            discipline_relation[current_dis['code']] = list(requirement)
+
                         edges.append((int(requirement), int(discipline)))
                     cont+= 1
             else:
                 nodes.append((int(discipline), str(discipline)))
-            
         
-        Graph(discipline_relation).dfs_recursao()
-   
+        print(discipline_relation)
+        
+        # Graph(discipline_relation).dfs_recursao()
+        Graph(discipline_relation).topologicalSort()
+
         # create a direct graph horizontal
         graph = ptp.Dot(graph_type='digraph', rankdir='LR')
             
