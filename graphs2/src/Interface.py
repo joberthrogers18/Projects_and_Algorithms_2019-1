@@ -2,7 +2,7 @@ import Tkinter as tk
 from IPython.display import SVG, display
 from PIL import ImageTk, Image
 from connectionDatabse import Connection
-from graph import Habilitation
+from habilitationClass import Habilitation
 import random
 
 

@@ -1,6 +1,7 @@
 import pydotplus
 from connectionDatabse import Connection
 import pydotplus as ptp
+from graphClass import Graph
 
 class Habilitation:
 # This instance use for instanciate an
@@ -18,25 +19,37 @@ class Habilitation:
         list_disciplines = []
         nodes = []
         edges = []
+        discipline_relation = {}
 
         # Load the disciplines of the habilitaion 
         # from all peorids and
         # join all in a unique list
         for discipline in self.code['disciplines']:
                 list_disciplines += discipline.values()[0]
-
+        
+        # print(len(list_disciplines))
         # Run in all list disicplines code and search for it in database
         # Add it in node  list with name and code
         # And all the requirement belong it is add in edges from graph connect
         for discipline in list_disciplines:
-            current_dis = collectionDiscipline.find_one({'code': str(discipline)})
-            nodes.append((int(discipline), current_dis['name']))
-            for requirement in current_dis['requirements']:
-                edges.append((int(requirement), int(discipline) ))
+            current_dis = collectionDiscipline.find_one({'code': discipline})
+            # print(current_dis)
+            if current_dis != None:
 
-        print(nodes)
-        print(edges)
-                
+                discipline_relation[current_dis['code']] = current_dis['requirements']
+
+                nodes.append((int(discipline), current_dis['name']))
+                for requirement in current_dis['requirements']:
+                    if isinstance(requirement, list):
+                        edges.append((int(requirement[0]), int(discipline) ))
+                    else:
+                        edges.append((int(requirement), int(discipline)))
+            else:
+                nodes.append((int(discipline), str(discipline)))
+
+        Graph(discipline_relation, len(nodes)).defineTopologicalOrder()
+
+        
         # create a direct graph horizontal
         graph = ptp.Dot(graph_type='digraph', rankdir='LR')
             
@@ -49,6 +62,7 @@ class Habilitation:
 
         # create an png image from the result
         graph.write_png('graph.png')
+        
 
 
 ''''
