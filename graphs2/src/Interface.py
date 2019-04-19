@@ -45,14 +45,29 @@ class Application:
                            height=self.heightScreen[0] - 200,
                            bg="white")
         # Load the photo in variable
-        img = tk.PhotoImage(file="graph.png")
+
+        # resize the graph image
+        imageLoad = Image.open("graph.png")
+        imageResized = imageLoad.resize((self.containerGraph.winfo_screenwidth() - 100,
+                                        self.containerGraph.winfo_screenheight() - 200),
+                                        Image.ANTIALIAS)
+
+        imageResized.save('imageResized.png')
+
+        img = tk.PhotoImage(file="imageResized.png")
+        
+    
         # Determine the pre set configurations for image
-        canvas.create_image(20,
-                            (self.heightScreen[0]) // 6,
+        canvas.create_image(0,
+                            0,
                             anchor=tk.NW,
                             image=img)
         # Adding image to container
         canvas.image = img
+
+
+        canvas.place(x=0, y=0, relwidth=1, relheight=1)
+
         # Able the container to show in master contatiner
         canvas.pack()
 
@@ -98,7 +113,7 @@ if __name__ == "__main__":
 
     # Title and size of screen
     root.title('Trabalho 2 Grafo')
-    root.geometry('700x700')
+    root.attributes('-zoomed', True)
 
     Application(root)  # Pass the root with config to Application class
     root.mainloop()  # loop for aba
