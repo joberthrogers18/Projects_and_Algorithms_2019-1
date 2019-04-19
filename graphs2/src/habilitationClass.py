@@ -36,17 +36,36 @@ class Habilitation:
             # print(current_dis)
             if current_dis != None:
 
+                type_str =False
+
                 discipline_relation[current_dis['code']] = current_dis['requirements']
 
-                nodes.append((int(discipline), current_dis['name']))
+                if len(current_dis['requirements']) > 1:
+                    type_str = True
+                else:
+                    nodes.append((int(discipline), current_dis['name']))
+
+                cont = 1
                 for requirement in current_dis['requirements']:
+                    print(requirement)
+
+                    if type_str:
+                        nodes.append((str(discipline) + str(cont), 'E'))
+                        edges.append((str(discipline) + str(cont), int(discipline)))
+                    
                     if isinstance(requirement, list):
-                        edges.append((int(requirement[0]), int(discipline) ))
+                        for single_requirement in requirement:
+                            if type_str:
+                                edges.append((int(single_requirement), str(discipline) + str(cont) ))
+                            else:
+                                edges.append((int(single_requirement), int(discipline) ))
                     else:
                         edges.append((int(requirement), int(discipline)))
+                    cont+= 1
             else:
                 nodes.append((int(discipline), str(discipline)))
-
+            
+        
         Graph(discipline_relation).dfs_recursao()
    
         # create a direct graph horizontal
@@ -61,7 +80,7 @@ class Habilitation:
 
         # create an png image from the result
         graph.write_png('graph.png')
-        
+          
 ''''
 def generate_graph():
 
