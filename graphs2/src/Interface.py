@@ -38,7 +38,7 @@ class Application:
         self.topologicalButton = tk.Button(self.containerEntry)
         self.topologicalButton["text"] = "Ordem Topologica"
         self.topologicalButton["command"] = self.changeLabelTopologicalTrue
-        self.topologicalButton.pack(side=tk.RIGHT, padx=500)
+        self.topologicalButton.pack_forget()
 
         # Container where the graph is
         self.containerGraph = tk.Frame(master, bg="white")
@@ -46,13 +46,18 @@ class Application:
 
         self.topological = False
 
+    def destroyContainerGraphWidget(self):
+
+        for widget in self.containerGraph.winfo_children():
+            widget.destroy()
+
+
     def changeLabelTopologicalTrue(self):
         self.topological = True
         self.topologicalButton["text"] = "Ver grafo"
         self.topologicalButton["command"] = self.changeLabelTopologicalFalse
 
-        for widget in self.containerGraph.winfo_children():
-            widget.destroy()
+        self.destroyContainerGraphWidget()
 
         self.showGraph()
     
@@ -61,15 +66,13 @@ class Application:
         self.topologicalButton["text"] = "Ordem Topologica"
         self.topologicalButton["command"] = self.changeLabelTopologicalTrue
 
-        for widget in self.containerGraph.winfo_children():
-            widget.destroy()
-
+        self.destroyContainerGraphWidget()
         self.showGraph()
 
     def showGraph(self):
         
         # set button topological visible
-        
+        self.topologicalButton.pack(side=tk.RIGHT, padx=500)
 
         # Load the image width and height
         if self.topological == True:
@@ -135,8 +138,7 @@ class Application:
             habilitationCode = 0
 
         # Clean all the widget if there is some in screen
-        for widget in self.containerGraph.winfo_children():
-            widget.destroy()
+        self.destroyContainerGraphWidget()
 
         # Connection to database and set the colletion used 
         database = Connection.connectionDatabase()
