@@ -4,6 +4,7 @@ from PIL import ImageTk, Image
 from connectionDatabse import Connection
 from habilitationClass import Habilitation
 import random
+from graphClass import Graph
 
 
 class Application:
@@ -108,7 +109,7 @@ class Application:
 
         
 if __name__ == "__main__":
-
+    
     root = tk.Tk()  # Allow the widget be on the table
 
     # Title and size of screen
@@ -117,3 +118,4 @@ if __name__ == "__main__":
 
     Application(root)  # Pass the root with config to Application class
     root.mainloop()  # loop for aba
+    

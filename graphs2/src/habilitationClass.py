@@ -47,9 +47,8 @@ class Habilitation:
             else:
                 nodes.append((int(discipline), str(discipline)))
 
-        Graph(discipline_relation, len(nodes)).defineTopologicalOrder()
-
-        
+        Graph(discipline_relation).dfs_recursao()
+   
         # create a direct graph horizontal
         graph = ptp.Dot(graph_type='digraph', rankdir='LR')
             
@@ -63,8 +62,6 @@ class Habilitation:
         # create an png image from the result
         graph.write_png('graph.png')
         
-
-
 ''''
 def generate_graph():
 
