@@ -2,19 +2,8 @@
 
 const BinaryHeap = require('@tyriar/binary-heap');
 
-all_times = [{ "start": '01:25', "final": '06:40' }, { "start": '05:45', "final": '10:45' }, { "start": '11:30', "final": '20:40' },
-{ "start": '02:00', "final": '07:00' }, { "start": '20:10', "final": '21:00' }, { "start": '15:00', "final": '23:10' }]
-
-//last_time = new Heap();
-
-/*let date1 = new Date()
-let date2 = new Date()
-date1.setHours(1, 12)
-date2.setHours(2,30)*/
-
-/*let heap = new Heap()
-heap.push(date1)
-heap.push(date2)*/
+all_times = [{ "start": 01, "final": 06 }, { "start": 05, "final": 10 }, { "start": 11, "final": 20 },
+{ "start": 02 , "final": 07 }, { "start": 20 , "final": 21 }, { "start": 15, "final": 23 }]
 
 const intervalPartition = (time) => {
 
@@ -23,7 +12,7 @@ const intervalPartition = (time) => {
     let classes = []
 
     time.map((current, key) => {
-        heap.insert(current.final, key)
+        heap.insert(current.start, key)
     })
 
     while (!heap.isEmpty()) {
@@ -35,13 +24,14 @@ const intervalPartition = (time) => {
             aux = []
             let node = heap.extractMinimum();
             aux.push(time[node.value]);
-            heapEarlyEnd.insert(node.key, 0);
             classes.push(aux);
+            heapEarlyEnd.insert(time[node.value].final, 0);
+
         } else {
             console.log('--------------');
-            console.log(heapEarlyEnd.findMinimum().key)
-            console.log(heap.findMinimum().key)
-            if(heapEarlyEnd.findMinimum().key <= time[heap.findMinimum().value].start){
+            console.log(time[heapEarlyEnd.findMinimum().value].final)
+            console.log(time[heap.findMinimum().value].start)
+            if(time[heapEarlyEnd.findMinimum().value].final <= time[heap.findMinimum().value].start){
                 let node = heap.extractMinimum();
                 let currentEarly = heapEarlyEnd.extractMinimum()
                 classes[currentEarly.value].push(time[node.value]);
@@ -52,7 +42,7 @@ const intervalPartition = (time) => {
                 aux = [];
                 aux.push(time[node.value]);
                 classes.push(aux);
-                heapEarlyEnd.insert(node.key,classes.length - 1);
+                heapEarlyEnd.insert(time[node.value].final,classes.length - 1);
             }
             
             //let nodeAux = heap.extractMinimum();
@@ -63,6 +53,7 @@ const intervalPartition = (time) => {
 
     console.log(classes);
     console.log(heapEarlyEnd)
+    console.log(heap)
 }
 
 intervalPartition(all_times)
