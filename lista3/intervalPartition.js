@@ -1,72 +1,55 @@
-//const Heap = require("heap");
-
 const BinaryHeap = require('@tyriar/binary-heap');
 
-all_times = [{ "start": 01, "final": 06 }, { "start": 05, "final": 10 }, { "start": 11, "final": 20 },
-{ "start": 02 , "final": 07 }, { "start": 20 , "final": 21 }, { "start": 15, "final": 23 }]
+module.exports= {
+  intervalPartition(req, res){
 
-const intervalPartition = (time) => {
+        var date = new Date();
 
-    let heap = new BinaryHeap();
-    let heapEarlyEnd = new BinaryHeap();
-    let classes = []
+        time = [{ "start": new Date(date.setHours(01,05)), "final":new Date( date.setHours(06, 15)) }, { "start": new Date(date.setHours(05,30)), "final": new Date(date.setHours(10,10)) }, { "start": new Date(date.setHours(11,50)), "final": new Date(date.setHours(20,45)) },
+        { "start": new Date(date.setHours(02,30)) , "final": new Date(date.setHours(07,25)) }, { "start": new Date(date.setHours(20,23)) , "final": new Date(date.setHours(21,20)) }, { "start": new Date(date.setHours(15,10)), "final": new Date(date.setHours(23,05)) }]
 
-    time.map((current, key) => {
-        heap.insert(current.start, key)
-    })
+        let heap = new BinaryHeap();
+        let heapEarlyEnd = new BinaryHeap();
+        let classes = []
 
-    while (!heap.isEmpty()) {
+        time.map((current, key) => {
+            heap.insert(current.start, key)
+        })
 
-        console.log(heap.findMinimum());
+        while (!heap.isEmpty()) {
 
-        if (classes.length === 0) {
+            if (classes.length === 0) {
 
-            aux = []
-            let node = heap.extractMinimum();
-            aux.push(time[node.value]);
-            classes.push(aux);
-            heapEarlyEnd.insert(time[node.value].final, 0);
-
-        } else {
-            console.log('--------------');
-            console.log(time[heapEarlyEnd.findMinimum().value].final)
-            console.log(time[heap.findMinimum().value].start)
-            if(time[heapEarlyEnd.findMinimum().value].final <= time[heap.findMinimum().value].start){
+                aux = []
                 let node = heap.extractMinimum();
-                let currentEarly = heapEarlyEnd.extractMinimum()
-                classes[currentEarly.value].push(time[node.value]);
-                heapEarlyEnd.insert(time[node.value].final , currentEarly.value);
-            }
-            else{
-                let node = heap.extractMinimum();
-                aux = [];
                 aux.push(time[node.value]);
                 classes.push(aux);
-                heapEarlyEnd.insert(time[node.value].final,classes.length - 1);
+                heapEarlyEnd.insert(time[node.value].final, 0);
+
+            } else {
+                if(time[heapEarlyEnd.findMinimum().value].final <= time[heap.findMinimum().value].start){
+                    let node = heap.extractMinimum();
+                    let currentEarly = heapEarlyEnd.extractMinimum()
+                    classes[currentEarly.value].push(time[node.value]);
+                    heapEarlyEnd.insert(time[node.value].final , currentEarly.value);
+                }
+                else{
+                    let node = heap.extractMinimum();
+                    aux = [];
+                    aux.push(time[node.value]);
+                    classes.push(aux);
+                    heapEarlyEnd.insert(time[node.value].final,classes.length - 1);
+                }
+                
+
             }
-            
-            //let nodeAux = heap.extractMinimum();
 
         }
 
+        res.json(classes);
+
     }
 
-    console.log(classes);
-    console.log(heapEarlyEnd)
-    console.log(heap)
 }
 
-intervalPartition(all_times)
 
-//console.log(last_time.peek())
-
-/*
-console.log(heap)
-
-let currentDate = heap.pop();
-
-console.log(currentDate.getHours())
-
-currentDate = heap.pop()
-
-console.log(currentDate)*/
