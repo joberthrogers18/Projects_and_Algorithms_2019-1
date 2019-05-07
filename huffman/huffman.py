@@ -10,12 +10,17 @@ class Huffman:
         self.frequence = {}
         self.sort_frequence = []
         self.codes = {}
+        self.trim = ()
+        self.word_encode = ''
+        self.word_decode = ''
 
         self.define_frequence()
         self.sortFrequence()
         self.buildTree()
         self.trim = self.trimTree(self.sort_frequence)
         self.assignCodes(self.trim)
+        self.encode()
+        self.decode()
 
     def define_frequence(self):
         # Function to take the number of character in phrase tha will
@@ -64,9 +69,27 @@ class Huffman:
             self.codes[node] = pat
         else:
             self.assignCodes(node[0], pat + '0')
-            self.assignCodes(node[1], pat + '1') 
+            self.assignCodes(node[1], pat + '1')
+
+    def encode(self):
+        for char in self.word:
+            self.word_encode += self.codes[char] 
+    
+    def decode(self):
+        
+        p = self.trim
+
+        for bit in self.word_encode:
+            if bit == '0': p = p[0]
+            else : p = p[1]
+            if type(p) == type(""):
+                self.word_decode += p
+                p = self.trim
+        
+
         
 if __name__ == "__main__":
 
     huffman = Huffman('Melanie eu te amo')
     print(huffman.codes)
+    print(huffman.word_decode)
