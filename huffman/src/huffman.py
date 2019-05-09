@@ -4,7 +4,7 @@ import os
 class Huffman:
 
     def __init__(self, word, trim=(), dencode=1):
-        print(type(trim))
+        
         self.word = word
         self.frequence = {}
         self.sort_frequence = []
@@ -92,41 +92,3 @@ class Huffman:
                 self.word_decode += p
                 p = self.trim
 
-
-if __name__ == "__main__":
-
-    file = open("teste_encoded.txt", "r")
-
-    first_line = file.readline()
-
-    if first_line[:2] == "*(":
-
-        word_dencode = ''
-
-        for line in file:
-            word_dencode += line
-
-        dencode = Huffman(word=word_dencode, trim=eval(
-            first_line[1:]), dencode=0)
-
-        file_dencode = open(os.path.basename(file.name)[
-                            0: -4]+"_dencoded.txt", "w+")
-        file_dencode.write(dencode.word_decode)
-
-    else:
-        file.seek(0)
-
-        word_for_encode = ''
-
-        for line in file:
-            word_for_encode += line
-
-        encodefy = Huffman(word=word_for_encode)
-
-        file_encode = open(os.path.basename(file.name)[
-                           0: -4] + "_encoded.txt", "w+")
-
-        file_encode.write("*" + str(encodefy.trim) + "\n")
-        file_encode.write(str(encodefy.word_encode))
-
-    file.close()
