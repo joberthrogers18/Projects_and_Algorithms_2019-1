@@ -1,6 +1,6 @@
 import pygame, sys 
 import time
-from pygame.locals import QUIT, KEYUP, K_ESCAPE
+from pygame.locals import QUIT, KEYDOWN, K_ESCAPE, K_RIGHT, K_LEFT
 
 BLUE = (0, 0, 155)
 BLACK = (0, 0, 0)
@@ -52,6 +52,24 @@ def draw_board(screen, matrix):
                 pygame.draw.rect(screen, GREY, [origin_x, origin_y, 20, 20])
                 pygame.draw.rect(screen, WHITE, [origin_x, origin_y, 18, 18])
 
+def isValidPosition(matrix, row, column):
+    if not(column>= 0 and column < 10 and row < 20):
+        return False
+    if (matrix[row][column] != '.'):
+        return False
+    
+    return True
+
+def listen_to_user_input(matrix, piece):
+    for event in pygame.event.get():
+        if event.type == KEYDOWN:     
+            if(event.key == K_LEFT):
+                if(isValidPosition(matrix, piece['row'], piece['column'] - 1)):
+                    piece['column'] -= 1
+
+            if(event.key == K_RIGHT):
+                if(isValidPosition(matrix, piece['row'], piece['column'] + 1)):
+                    piece['column'] += 1
 
 def run_tetris_game():
     pygame.init()
@@ -78,11 +96,13 @@ def run_tetris_game():
         pygame.draw.rect(
             screen,
             BLUE,
-            [100, 50, 10*20, 20*20 + 10], 
+            [100, 50, 10*20 + 10, 20*20 + 10], 
             5
         )
 
         draw_board(screen, game_matrix)
+
+        listen_to_user_input(game_matrix, piece)
 
         if(piece['row'] == 19 or game_matrix[piece['row'] + 1][piece['column']] != '.'):
             game_matrix[piece['row']][piece['column']] = 'c'
