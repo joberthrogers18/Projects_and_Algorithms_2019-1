@@ -33,41 +33,48 @@ def draw_axis(screen):
 def draw_single_piece(screen, matrix, col, row):
     pygame.draw.rect(screen, RED_DARK, [ 10 + 24*col, 10 + 24*row, 21, 21])
 
-def create_piece():
-    piece = {}
-    piece['row'] = 0
-    piece['col'] = 0
-
-    return piece 
-
 def draw_board(screen, matrix):
     for row in range(29):
         for col in range(29):
             if matrix[row][col] == 'c':
                 draw_single_piece(screen, matrix, col, row)
 
-def listen_input_user(matrix, row, col):
+def listen_input_user(matrix, row, col, direction):
+
+    is_pressed = False
 
     for event in pygame.event.get():
         if event.type == KEYDOWN:
-            if event.key == K_LEFT:
+            is_pressed = True
+            if event.key == K_LEFT and is_valid_position(row, col - 1):
                 matrix[row][col] = "."
                 col -= 1
                 matrix[row][col] = 'c'
-            if event.key == K_RIGHT:
+                direction = 0
+            if event.key == K_RIGHT and is_valid_position(row, col + 1):
                 matrix[row][col] = "."
                 col += 1
                 matrix[row][col] = 'c'
-            if event.key == K_UP:
+                direction = 1
+            if event.key == K_UP and is_valid_position(row - 1, col):
                 matrix[row][col] = "."
                 row -= 1
                 matrix[row][col] = 'c'
-            if event.key == K_DOWN:
+                direction = 2
+            if event.key == K_DOWN and is_valid_position(row + 1, col):
                 matrix[row][col] = "."
                 row += 1
                 matrix[row][col] = 'c'
+                direction = 3
     
-    return row, col
+    return row, col, direction, is_pressed
+
+def is_valid_position(row, col):
+    if row >=0 and row < 29 and col >= 0 and col < 29:
+        return True
+
+    return False
+    
 
 def run():
 
@@ -76,16 +83,17 @@ def run():
     pygame.display.set_caption('Snake game')
 
     last_time_updated = time.time()
-    piece = create_piece()
+    # piece = create_piece()
 
     matrix = create_matrix()
-    # 0 is horizontal and 1 is vertical
-    direction = 0
+
+    direction = 1
 
     current_row = 0
     current_col = 0
 
     matrix[0][0] = 'c'
+    is_pressed = False
 
     while True:
 
@@ -100,16 +108,37 @@ def run():
 
         draw_axis(screen)
 
-        # if( time.time() - last_time_updated > 0.5 ):
-        #     last_time_updated = time.time()
+        current_row, current_col, direction, is_pressed = listen_input_user(matrix, current_row, current_col, direction)
+
+        if( time.time() - last_time_updated > 0.7 and not is_pressed ):
+            last_time_updated = time.time()
             
-        current_row, current_col = listen_input_user(matrix, current_row, current_col)
+            if direction == 0 and is_valid_position(current_row, current_col - 1):
+                matrix[current_row][current_col] = '.'
+                matrix[current_row][current_col - 1] = 'c'
+                current_col -= 1
+
+            elif direction == 1 and is_valid_position(current_row, current_col + 1):
+                matrix[current_row][current_col] = '.'
+                matrix[current_row][current_col + 1] = 'c'
+                current_col += 1
+
+            elif direction == 2 and is_valid_position(current_row - 1, current_col ):
+                matrix[current_row][current_col] = '.'
+                matrix[current_row - 1][current_col] = 'c'
+                current_row -= 1
+
+            elif direction == 3 and is_valid_position(current_row + 1, current_col):
+                matrix[current_row][current_col] = '.'
+                matrix[current_row + 1][current_col] = 'c'
+                current_row += 1
+                        
+            time.sleep(0.1)
         
         draw_board(screen, matrix)
 
         pygame.display.flip()
         
-
 
 if __name__ == '__main__':
     run()
