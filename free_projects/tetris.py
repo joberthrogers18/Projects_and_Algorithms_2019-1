@@ -52,7 +52,7 @@ def draw_board(screen, matrix):
                 pygame.draw.rect(screen, GREY, [origin_x, origin_y, 20, 20])
                 pygame.draw.rect(screen, WHITE, [origin_x, origin_y, 18, 18])
 
-def isValidPosition(matrix, row, column):
+def is_valid_position(matrix, row, column):
     if not(column>= 0 and column < 10 and row < 20):
         return False
     if (matrix[row][column] != '.'):
@@ -64,12 +64,37 @@ def listen_to_user_input(matrix, piece):
     for event in pygame.event.get():
         if event.type == KEYDOWN:     
             if(event.key == K_LEFT):
-                if(isValidPosition(matrix, piece['row'], piece['column'] - 1)):
+                if(is_valid_position(matrix, piece['row'], piece['column'] - 1)):
                     piece['column'] -= 1
 
             if(event.key == K_RIGHT):
-                if(isValidPosition(matrix, piece['row'], piece['column'] + 1)):
+                if(is_valid_position(matrix, piece['row'], piece['column'] + 1)):
                     piece['column'] += 1
+
+def remove_completed_lines(matrix):
+    num_lines_removed = 0
+
+    for row in range(len(matrix)):
+        if(line_is_completed(matrix, row)):
+            for row_to_move_down in range(row, 0, -1):
+                for column in range(10):
+                    matrix[row_to_move_down][column] = matrix[row_to_move_down - 1][column]
+            
+            for x in range(10):
+                matrix[0][x] = '.'
+            num_lines_removed += 1
+    return num_lines_removed
+
+def line_is_completed(matrix, row):
+    
+    for column in range(10):
+        if matrix[row][column] == '.':
+            return False
+
+    return True
+
+def draw_score(screen, score):
+    return 
 
 def run_tetris_game():
     pygame.init()
@@ -80,6 +105,7 @@ def run_tetris_game():
     
     last_time_piece_moved = time.time()
     piece = create_piece()
+    score = 0
 
     while True:
         screen.fill(BLACK)
@@ -101,12 +127,16 @@ def run_tetris_game():
         )
 
         draw_board(screen, game_matrix)
+        draw_score(screen, score)
 
         listen_to_user_input(game_matrix, piece)
 
         if(piece['row'] == 19 or game_matrix[piece['row'] + 1][piece['column']] != '.'):
             game_matrix[piece['row']][piece['column']] = 'c'
+            lines_removed = remove_completed_lines(game_matrix)
+            score += lines_removed
             piece = create_piece()
+
 
         pygame.display.update()
         for event in pygame.event.get(QUIT):
