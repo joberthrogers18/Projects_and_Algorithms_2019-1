@@ -94,7 +94,10 @@ def line_is_completed(matrix, row):
     return True
 
 def draw_score(screen, score):
-    return 
+    font = pygame.font.Font('freesansbold.ttf', 20) 
+    text = font.render('Score: ' + str(score), True, WHITE)
+    screen.blit(text, (400, 50))
+    
 
 def run_tetris_game():
     pygame.init()
